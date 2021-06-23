@@ -12,13 +12,22 @@ function setGame() {
     return cvs, ctx, mapSettings.render()
 }
 
+//Game loop
+function gameDraw() {
+
+    if (gameSettings.gameRuns) {
+      setGame()
+      requestAnimationFrame(gameDraw)
+    }
+  } 
+
 // Set the game
 let gameSettings = {
     gameRuns: true,
     enemies: 5
 }
 
-
+// Map settings
 let mapSettings = {
     map : [
         [4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4],
@@ -47,6 +56,7 @@ let mapSettings = {
     getTile: function(col, row) {
         return this.map[col][row]
     },
+
     drawTile: function (x, y, w, h, color) { 
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
@@ -91,10 +101,20 @@ let mapSettings = {
 
 }
 
+
+
+
+
 let character = {
     health : 10,
+    size: mapSettings.tileSize,
     locationX: 1,
-    locationY: 1
+    locationY: 1,
+    
+    draw: function(x, y) {
+        return mapSettings.drawTile(x, y, this.size, this.size, "white")
+    }
 }
 
-setGame()
+gameDraw()
+
