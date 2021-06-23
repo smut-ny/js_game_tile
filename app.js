@@ -21,7 +21,7 @@ let gameSettings = {
 
 let mapSettings = {
     map : [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4],
         [2,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
         [3,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2],
@@ -31,9 +31,9 @@ let mapSettings = {
         [3,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
         [3,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1],
         [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1],
-        [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
+        [4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]
     ],
-    tileSize: 20    ,
+    tileSize: 40    ,
     imageAtlas: 'tiles.png',
 
     getMapDimensions: function() {
@@ -48,9 +48,9 @@ let mapSettings = {
         return this.map[col][row]
     },
     drawTile: function (x, y, w, h, color) { 
-        ctx.fillRect(x, y, w, h);
         ctx.fillStyle = color;
-
+        ctx.fillRect(x, y, w, h);
+        
      },
 
     render: function(){
@@ -62,15 +62,16 @@ let mapSettings = {
                 let color = ""
 
                 if (tile == 0) {
-                    color = "red"
+                    color = "red";
                 } else if (tile == 1) {
-                    color = "blue"
+                    color = "blue";
                 } else if (tile == 2) {
-                    color = "green"
+                    color = "green";
+                } else if (tile == 4) {
+                    color = "black";
                 } else {
-                    color = "black"
+                    color = "pink"
                 }
-                // todo c, r must start on 0
                 this.drawTile(
                     c * this.tileSize,
                     r * this.tileSize,
