@@ -9,19 +9,19 @@ function setGame() {
     cvs.width  = mapSettings.tileSize * mapSettings.map[0].length;
     cvs.height = mapSettings.tileSize * mapSettings.map.length;
     document.addEventListener('keydown', movement.controller);
-
-
+    
     return cvs, ctx, mapSettings.renderMap()
+
 }
 
-
+const imageSprite = new Image();
+imageSprite.src = "sprite.png";
 
 
 //Game loop
 function gameDraw() {
 
-    if (gameSettings.gameRuns) {
-        
+    if (gameSettings.gameRuns) {        
       setGame()
       requestAnimationFrame(gameDraw)
 
@@ -69,10 +69,10 @@ let mapSettings = {
     map : [
         [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
         [3,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+        [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,2,0,0,0,0,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,3],
-        [3,0,0,0,0,0,0,0,0,0,2,1,1,1,1,3,0,0,0,0,0,0,0,3],
+        [3,0,0,0,0,5,0,0,0,0,2,1,1,1,1,3,0,0,0,0,0,0,0,3],
         [3,0,0,0,0,0,0,0,0,2,0,0,2,2,0,0,0,0,0,0,0,0,0,3],
         [3,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
         [3,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,3],
@@ -80,7 +80,6 @@ let mapSettings = {
         [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
     ],
     tileSize: 40,
-    imageAtlas: 'tiles.png',
     MovableSpace: [],
 
     killTile: function(r, c){
@@ -102,8 +101,11 @@ let mapSettings = {
     drawTile: function (x, y, w, h, color) { 
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
-        
-     },
+    },
+
+    drawTileImage: function (image, c, r){
+        ctx.drawImage(imageSprite, 0, image, this.tileSize, this.tileSize, c, r, 40, 40)
+    },
 
     getRandomTile: function () {
         let randomRow = randomInteger(0, (this.map.length - 1))
@@ -126,37 +128,42 @@ let mapSettings = {
             for (var c = 0; c < columns; c++) {
                 
                 let tile = this.getTile(r, c)
+                let image
                 let color = ""
 
                 if (tile == 0) {
                     color = "red";
+                    image = 0
 
                     this.MovableSpace.push([r, c])
 
                 } else if (tile == 1) {
                     color = "blue";
+                    image = 40
 
                 } else if (tile == 2) {
                     color = "green";
+                    image = 80
 
                 } else if (tile == 3) {
                     color = "purple";
+                    image = 120
 
-                } else if (tile == 4) {
-                    color = "black";
                 } else if (tile == 5) {
                     color = "white"
+                    image = 160
                     character.location.push(r)
                     character.location.push(c)
                 }
                 
-                this.drawTile (
-                    c * this.tileSize,
-                    r * this.tileSize,
-                    this.tileSize,
-                    this.tileSize,
-                    color
-                )
+                // this.drawTile (
+                //     c * this.tileSize,
+                //     r * this.tileSize,
+                //     this.tileSize,
+                //     this.tileSize,
+                //     color
+                // )
+                this.drawTileImage(image, c * this.tileSize, r * this.tileSize)
             }
         }
     }
@@ -255,3 +262,6 @@ async function getRandomWord(){
 
 
 gameDraw()
+
+
+
