@@ -42,7 +42,7 @@ let gameSettings = {
         }
     },
 
-    fight: function(){
+    fight: function(r, c){
 
         getRandomWord()
             .then(data => this.randomWord = data[0])
@@ -50,8 +50,8 @@ let gameSettings = {
         let fight = window.prompt(`Unscramble the word "${this.randomWord.shuffle()}" or die!`)
 
         if (fight == this.randomWord){
-
-            console.log("you won")
+            console.log("Correcto!")
+            mapSettings.killTile(r, c)
 
         } else {
             console.log(`Wrong! Correct word was ${this.randomWord}`)
@@ -82,6 +82,10 @@ let mapSettings = {
     tileSize: 40,
     imageAtlas: 'tiles.png',
     MovableSpace: [],
+
+    killTile: function(r, c){
+        this.map[r][c] = 0
+    },
 
     getMapDimensions: function() {
         let rows = this.map.length;
@@ -173,8 +177,9 @@ let movement = {
 
             mapSettings.map[character.location[0]][character.location[1]] = 0
             mapSettings.map[r][c] = 5
+
         } else if (mapSettings.getTile(r, c) == 2) {
-            gameSettings.fight()
+            gameSettings.fight(r, c)
         }
 
     },
@@ -204,10 +209,6 @@ let movement = {
             case "KeyA":
             case "ArrowLeft":
                 movement.movementLogic(movement.nearbyTiles.getLeft()[0], movement.nearbyTiles.getLeft()[1])
-                break;
-
-            case "Space":
-                console.log(true)
                 break;
         } 
     }
