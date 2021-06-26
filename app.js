@@ -9,13 +9,14 @@ function setGame() {
     cvs.width  = mapSettings.tileSize * mapSettings.map[0].length;
     cvs.height = mapSettings.tileSize * mapSettings.map.length;
     document.addEventListener('keydown', movement.controller);
+    imageSprite = new Image();
+    imageSprite.src = "sprite.png";
     
-    return cvs, ctx, mapSettings.renderMap()
+    return cvs, ctx, mapSettings.renderMap(), imageSprite
 
 }
 
-const imageSprite = new Image();
-imageSprite.src = "sprite.png";
+
 
 
 //Game loop
@@ -27,6 +28,7 @@ function gameDraw() {
 
     } else {
         console.log("GAME OVER")
+        document.querySelector("#gameOver").style.display = "block"
     }
 } 
 
@@ -34,7 +36,7 @@ function gameDraw() {
 let gameSettings = {
     gameRuns: true,
     enemies: 5,
-    randomWord: "cat",
+    randomWord: capitalizeFirstLetter("cat"),
 
     gameOver: function () {
         if (character.health <= 0) {
@@ -45,18 +47,33 @@ let gameSettings = {
     fight: function(r, c){
 
         getRandomWord()
-            .then(data => this.randomWord = data[0])
+            .then(data => this.randomWord = capitalizeFirstLetter(data[0]))
         
         let fight = window.prompt(`Unscramble the word "${this.randomWord.shuffle()}" or die!`)
 
         if (fight == this.randomWord){
-            console.log("Correcto!")
+            document.querySelector("p").innerText = `${this.randomWord} is correct!`
+
             mapSettings.killTile(r, c)
 
         } else {
-            console.log(`Wrong! Correct word was ${this.randomWord}`)
+            
+            document.querySelector("p").innerText = `Wrong! Correct word was ${this.randomWord}`
 
             character.health = character.health - 1
+
+            //Easter egg            
+            if (character.health == -2){
+                document.querySelector("#gameOver").innerText = "Just stop pls"
+            } else if (character.health == -50) {
+                document.querySelector("#gameOver").innerText = "Are you still doing it?"
+            } else if (character.health == -100) {
+                document.querySelector("#gameOver").innerText = "There wont be any other text anymore, just keep going..."
+            } else if (character.health == -1000) {
+                document.querySelector("#gameOver").innerText = "I lied :)"
+            }
+
+            document.querySelector("#health").innerText = character.health
             gameSettings.gameOver()
 
         }
@@ -235,6 +252,12 @@ function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+//First letter upperCase
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+  
+
 //Shuffle strings
 
 String.prototype.shuffle = function () {
@@ -255,9 +278,6 @@ async function getRandomWord(){
     let response = await fetch("https://random-word-form.herokuapp.com/random/noun")
     return response.json()
 }
-
-
-
 
 
 

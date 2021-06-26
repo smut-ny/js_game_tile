@@ -6,14 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script defer src="app.js"></script>
     <title>Js Game Tile Based</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+
+    <style>
+        * {
+            margin: 0;
+            font-family: 'VT323', monospace;
+        }
+
+        p {
+            font-size: 26px;
+            margin-left: 100px;
+
+        }
+
+        h2 {
+            
+            position: absolute;
+            font-size: 40px;
+            color: red;
+            
+        }
+
+        h2#health {
+            top: 10px;
+            left: 10px;
+        }
+
+        h2#gameOver {
+            top: 120px;
+            left: 150px;
+            font-size: 100px;
+            display: none;
+        }
+    </style>
 </head>
 <body>
     
+    <h2 id="health">10</h2>
+    <h2 id="gameOver">GAME OVER</h2>
     <div class="container">
         <canvas id="game"></canvas>
     </div>
-    <H1>You have to kill the greens!</H1>
-    <H2>Prompt: </H2> <H2 class="prompt"></H2>
+    <p></p>
 
 </body>
 </html>
