@@ -24,6 +24,10 @@
 
         }
 
+        .container {
+            max-width: 1080px;
+        }
+
         h2 {
             
             position: absolute;
@@ -43,14 +47,24 @@
             font-size: 100px;
             display: none;
         }
+
+        h2#numberOfEnemies {
+            display: flex;
+            justify-content: flex-end;
+            color: black;
+            width: 950px;
+        }
+
     </style>
 </head>
 <body>
     
-    <h2 id="health">10</h2>
-    <h2 id="gameOver">GAME OVER</h2>
     <div class="container">
-        <canvas id="game"></canvas>
+        <h2 id="health">10</h2>
+        <h2 id="gameOver">GAME OVER</h2>
+        <canvas id="game">
+        </canvas>
+        <h2 id="numberOfEnemies"></h2>
     </div>
     <p></p>
 

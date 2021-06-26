@@ -14,6 +14,8 @@ function setGame() {
   cvs.height = mapSettings.tileSize * mapSettings.map.length;
   document.addEventListener("keydown", movement.controller);
 
+  document.querySelector("#numberOfEnemies").innerText = `Number of enemies ${ mapSettings.numOfEnemies.length }`
+
   //Image texture load
   imageSprite = new Image();
   imageSprite.src = "sprite.png";
@@ -25,9 +27,9 @@ function setGame() {
 function gameDraw() {
   if (gameSettings.gameRuns) {
     setGame();
+    gameSettings.win();
     requestAnimationFrame(gameDraw);
   } else {
-    console.log("GAME OVER");
     document.querySelector("#gameOver").style.display = "block";
   }
 }
@@ -35,12 +37,20 @@ function gameDraw() {
 // Set the game
 let gameSettings = {
   gameRuns: true,
-  enemies: 5,
   randomWord: capitalizeFirstLetter("cat"),
 
   gameOver: function () {
     if (character.health <= 0) {
       gameSettings.gameRuns = false;
+    }
+  },
+
+  win: function() {
+    if (mapSettings.numOfEnemies.length == 0) {
+      document.querySelector("#gameOver").innerText = "You WON!"
+      document.querySelector("#gameOver").style.display = "block";
+      
+      this.gameRuns = false;
     }
   },
 
@@ -62,7 +72,7 @@ let gameSettings = {
       document.querySelector("p").innerText = `Wrong! Correct word was ${this.randomWord}`;
       character.health = character.health - 1;
 
-      //Easter egg
+      //Easter eggs
       if (character.health == -2) {
         document.querySelector("#gameOver").innerText = "Just stop pls";
       } else if (character.health == -50) {
@@ -97,7 +107,8 @@ let mapSettings = {
     [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
   ],
   tileSize: 40,
-  MovableSpace: [],
+  movableSpace: [],
+  numOfEnemies: [],
 
   killTile: function (r, c) {
     this.map[r][c] = 0;
@@ -143,7 +154,8 @@ let mapSettings = {
 
   renderMap: function () {
     //Reset coords
-    this.MovableSpace = [];
+    this.movableSpace = [];
+    this.numOfEnemies = [];
     character.location = [];
 
     //Function main
@@ -160,13 +172,17 @@ let mapSettings = {
           color = "red";
           image = 0;
 
-          this.MovableSpace.push([r, c]);
+          this.movableSpace.push([r, c]);
+          
         } else if (tile == 1) {
           color = "blue";
           image = 40;
         } else if (tile == 2) {
           color = "green";
           image = 80;
+
+          this.numOfEnemies.push([r, c]);
+
         } else if (tile == 3) {
           color = "purple";
           image = 120;
