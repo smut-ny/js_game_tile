@@ -1,5 +1,5 @@
 // Global variables
-var ctx, cvs
+var ctx, cvs, key
 
 
 // Main function
@@ -8,9 +8,19 @@ function setGame() {
     ctx = cvs.getContext('2d');
     cvs.width  = mapSettings.tileSize * mapSettings.map[0].length;
     cvs.height = mapSettings.tileSize * mapSettings.map.length;
+    document.addEventListener('keydown', movement.controller);
+
 
     return cvs, ctx, mapSettings.renderMap()
 }
+
+function gameOver() {
+    if (character.health <= 0){
+        gameSettings.gameRuns = false
+    }
+}
+
+
 
 //Game loop
 function gameDraw() {
@@ -19,7 +29,10 @@ function gameDraw() {
         
       setGame()
       requestAnimationFrame(gameDraw)
-    } 
+
+    } else {
+        console.log("GAME OVER")
+    }
 } 
 
 // Set the game
@@ -31,17 +44,17 @@ let gameSettings = {
 // Map settings
 let mapSettings = {
     map : [
-        [4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4],
-        [2,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
-        [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,2,0,0,0,0,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,0,0,0,0,0,0,0,0,2,1,1,1,1,3,0,0,0,0,0,0,0,2],
-        [3,0,0,0,0,0,0,0,0,2,0,0,2,3,0,0,0,0,0,0,0,0,0,3],
-        [3,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-        [3,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1],
-        [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1,1,1],
-        [4,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,4]
+        [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3],
+        [3,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+        [3,0,0,0,0,5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+        [3,0,0,0,0,0,0,0,2,1,3,0,0,0,0,0,0,0,0,0,0,0,0,3],
+        [3,0,2,0,0,0,0,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,3],
+        [3,0,0,0,0,0,0,0,0,0,2,1,1,1,1,3,0,0,0,0,0,0,0,3],
+        [3,0,0,0,0,0,0,0,0,2,0,0,2,2,0,0,0,0,0,0,0,0,0,3],
+        [3,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],
+        [3,0,2,1,1,1,3,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,3],
+        [3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1,1,1,1,3],
+        [3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3]
     ],
     tileSize: 40,
     imageAtlas: 'tiles.png',
@@ -73,8 +86,12 @@ let mapSettings = {
     },
 
     renderMap: function(){
-        this.MovableSpace = []
 
+        //Reset coords
+        this.MovableSpace = []
+        character.location = []
+
+        //Function main
        let rows = this.getMapDimensions()[1]
        let columns = this.getMapDimensions()[0]
 
@@ -98,8 +115,12 @@ let mapSettings = {
                 } else if (tile == 3) {
                     color = "purple";
 
-                }else if (tile == 4) {
+                } else if (tile == 4) {
                     color = "black";
+                } else if (tile == 5) {
+                    color = "white"
+                    character.location.push(r)
+                    character.location.push(c)
                 }
                 
                 this.drawTile (
@@ -115,15 +136,80 @@ let mapSettings = {
 }
 
 
+let movement = {
+
+    nearbyTiles: {
+        getTop: function(){ return [character.location[0] - 1, character.location[1]] },
+        getRight: function(){ return [character.location[0], character.location[1] + 1] },
+        getBot: function(){ return [character.location[0] + 1, character.location[1]] },
+        getLeft: function(){ return [character.location[0], character.location[1] - 1] }
+    },
+
+    movementLogic: function(r, c){
+        if (mapSettings.getTile(r, c) == 0) {
+
+            mapSettings.map[character.location[0]][character.location[1]] = 0
+            mapSettings.map[r][c] = 5
+        } else if (mapSettings.getTile(r, c) == 2) {
+            character.fight()
+        }
+
+    },
+
+    controller: function (e) {
+
+        key = e.code
+
+        switch (e.code) {
+
+            
+            case "KeyW":
+            case "ArrowUp":
+                movement.movementLogic(movement.nearbyTiles.getTop()[0], movement.nearbyTiles.getTop()[1])
+                break;
+
+            case "KeyS":
+            case "ArrowDown":
+                movement.movementLogic(movement.nearbyTiles.getBot()[0], movement.nearbyTiles.getBot()[1])
+                break;
+
+            case "KeyD":
+            case "ArrowRight":
+                movement.movementLogic(movement.nearbyTiles.getRight()[0], movement.nearbyTiles.getRight()[1])
+                break;
+
+            case "KeyA":
+            case "ArrowLeft":
+                movement.movementLogic(movement.nearbyTiles.getLeft()[0], movement.nearbyTiles.getLeft()[1])
+                break;
+
+            case "Space":
+                console.log(true)
+                break;
+        } 
+    }
+}
+
 let character = {
     health : 10,
     size: mapSettings.tileSize,
-    locationX: 1,
-    locationY: 1,
-    
-    draw: function(x, y) {
-        return mapSettings.drawTile(x, y, this.size, this.size, "white")
+    location: [],
+    fight: function(){
+
+        fight = window.prompt("Press X to defeat the enemy")
+
+        if (fight == "test"){
+            console.log("you won")
+        } else {
+            character.health = character.health - 1
+            gameOver()
+        }
+
     }
+    
+    // draw: function(x, y) {
+    //     return mapSettings.drawTile(this.size * y, this.size * x, this.size, this.size, "white")
+    // }
 }
 
 
@@ -131,7 +217,10 @@ let character = {
 
 function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+
   }
+//Event key listener
+
 
 
 gameDraw()
