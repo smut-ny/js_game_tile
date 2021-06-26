@@ -14,11 +14,6 @@ function setGame() {
     return cvs, ctx, mapSettings.renderMap()
 }
 
-function gameOver() {
-    if (character.health <= 0){
-        gameSettings.gameRuns = false
-    }
-}
 
 
 
@@ -38,7 +33,35 @@ function gameDraw() {
 // Set the game
 let gameSettings = {
     gameRuns: true,
-    enemies: 5
+    enemies: 5,
+    randomWord: "cat",
+
+    gameOver: function () {
+        if (character.health <= 0) {
+            gameSettings.gameRuns = false
+        }
+    },
+
+    fight: function(){
+
+        getRandomWord()
+            .then(data => this.randomWord = data[0])
+        
+        let fight = window.prompt(`Unscramble the word "${this.randomWord.shuffle()}" or die!`)
+
+        if (fight == this.randomWord){
+
+            console.log("you won")
+
+        } else {
+            console.log(`Wrong! Correct word was ${this.randomWord}`)
+
+            character.health = character.health - 1
+            gameSettings.gameOver()
+
+        }
+
+    }
 }
 
 // Map settings
@@ -151,7 +174,7 @@ let movement = {
             mapSettings.map[character.location[0]][character.location[1]] = 0
             mapSettings.map[r][c] = 5
         } else if (mapSettings.getTile(r, c) == 2) {
-            character.fight()
+            gameSettings.fight()
         }
 
     },
@@ -193,33 +216,40 @@ let movement = {
 let character = {
     health : 10,
     size: mapSettings.tileSize,
-    location: [],
-    fight: function(){
-
-        fight = window.prompt("Press X to defeat the enemy")
-
-        if (fight == "test"){
-            console.log("you won")
-        } else {
-            character.health = character.health - 1
-            gameOver()
-        }
-
-    }
-    
-    // draw: function(x, y) {
-    //     return mapSettings.drawTile(this.size * y, this.size * x, this.size, this.size, "white")
-    // }
+    location: []
 }
 
 
 //Secondary functions
+//Random int
 
 function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-  }
-//Event key listener
+//Shuffle strings
+
+String.prototype.shuffle = function () {
+    var a = this.split(""),
+        n = a.length;
+
+    for(var i = n - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = a[i];
+        a[i] = a[j];
+        a[j] = tmp;
+    }
+    return a.join("");
+}
+
+//API
+async function getRandomWord(){
+    let response = await fetch("https://random-word-form.herokuapp.com/random/noun")
+    return response.json()
+}
+
+
+
 
 
 
