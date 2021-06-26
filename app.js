@@ -9,7 +9,7 @@ function setGame() {
     cvs.width  = mapSettings.tileSize * mapSettings.map[0].length;
     cvs.height = mapSettings.tileSize * mapSettings.map.length;
 
-    return cvs, ctx, mapSettings.render()
+    return cvs, ctx, mapSettings.renderMap()
 }
 
 //Game loop
@@ -63,7 +63,14 @@ let mapSettings = {
         
      },
 
-    render: function(){
+    getRandomTile: function () {
+        let randomRow = randomInteger(0, (this.map.length - 1))
+        let randomColumn = randomInteger(0, (this.map[0].length - 1))
+
+        return [this.getTile(randomRow, randomColumn), [randomRow, randomColumn]]
+    },
+
+    renderMap: function(){
         for (var r = 0; r < this.getMapDimensions()[1]; r++) {
             for (var c = 0; c < this.getMapDimensions()[0]; c++) {
                 
@@ -97,8 +104,6 @@ let mapSettings = {
           }
     }
 
-    
-
 }
 
 
@@ -115,6 +120,13 @@ let character = {
         return mapSettings.drawTile(x, y, this.size, this.size, "white")
     }
 }
+
+
+//Secondary functions
+
+function randomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
 
 gameDraw()
 
