@@ -1,4 +1,4 @@
-//TODO WIN MESSAGE
+//TODO Map random generation
 
 
 
