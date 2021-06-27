@@ -1,10 +1,7 @@
 //TODO Map random generation
 
-
-
 // Global variables
-var ctx, cvs, key;
-
+var ctx, cvs, key, imageSprite;
 // Main setting function
 function setGame() {
   //Canvas settings
@@ -25,6 +22,7 @@ function setGame() {
 
 //Game loop
 function gameDraw() {
+
   if (gameSettings.gameRuns) {
     setGame();
     gameSettings.win();
@@ -206,6 +204,8 @@ let mapSettings = {
   },
 };
 
+
+
 let movement = {
   nearbyTiles: {
     getTop: function () {
@@ -270,6 +270,7 @@ let movement = {
   },
 };
 
+
 let character = {
   health: 10,
   size: mapSettings.tileSize,
@@ -311,4 +312,6 @@ async function getRandomWord() {
   return response.json();
 }
 
+
 gameDraw();
+
