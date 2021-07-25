@@ -90,7 +90,7 @@ let gameSettings = {
         document.querySelector("#gameOver").innerText = "I lied :)";
       }
 
-      document.querySelector("#health").innerText = wdddcharacter.health ;
+      document.querySelector("#health").innerText = character.health ;
       gameSettings.gameOver();
     }
   },
