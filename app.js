@@ -2,8 +2,11 @@
 
 // Global variables
 var ctx, cvs, key, imageSprite;
+
+
 // Main setting function
 function setGame() {
+  
   //Canvas settings
   cvs = document.getElementById("game");
   ctx = cvs.getContext("2d");
@@ -11,7 +14,7 @@ function setGame() {
   cvs.height = mapSettings.tileSize * mapSettings.map.length;
   document.addEventListener("keydown", movement.controller);
 
-  document.querySelector("#numberOfEnemies").innerText = `Number of enemies ${ mapSettings.numOfEnemies.length }`
+  document.querySelector("#numberOfEnemies").innerText = `Number of enemies ${ mapSettings.getEnemies.length }`
 
   //Image texture load
   imageSprite = new Image();
@@ -19,6 +22,7 @@ function setGame() {
 
   return cvs, ctx, mapSettings.renderMap(), imageSprite;
 }
+
 
 //Game loop
 function gameDraw() {
@@ -32,10 +36,12 @@ function gameDraw() {
   }
 }
 
+
 // Set the game
 let gameSettings = {
   gameRuns: true,
-  randomWord: capitalizeFirstLetter("cat"),
+  randomWord: capitalizeFirstLetter("cat"), //First word is always Cat
+  numberOfEnemies: 10,
 
   gameOver: function () {
     if (character.health <= 0) {
@@ -44,7 +50,7 @@ let gameSettings = {
   },
 
   win: function() {
-    if (mapSettings.numOfEnemies.length == 0) {
+    if (mapSettings.getEnemies.length == 0) {
       document.querySelector("#gameOver").innerText = "You WON!"
       document.querySelector("#gameOver").style.display = "block";
       
@@ -70,12 +76,13 @@ let gameSettings = {
       document.querySelector("p").innerText = `Wrong! Correct word was ${this.randomWord}`;
       character.health = character.health - 1;
 
+
       //Easter eggs
       if (character.health == -2) {
-        document.querySelector("#gameOver").innerText = "Just stop pls";
+        document.querySelector("#gameOver").innerText = "Just stop please";
       } else if (character.health == -50) {
         document.querySelector("#gameOver").innerText =
-          "Are you still doing it?";
+          "Are you still doing that?";
       } else if (character.health == -100) {
         document.querySelector("#gameOver").innerText =
           "There wont be any other text anymore, just keep going...";
@@ -83,7 +90,7 @@ let gameSettings = {
         document.querySelector("#gameOver").innerText = "I lied :)";
       }
 
-      document.querySelector("#health").innerText = character.health;
+      document.querySelector("#health").innerText = wdddcharacter.health ;
       gameSettings.gameOver();
     }
   },
@@ -91,22 +98,23 @@ let gameSettings = {
 
 // Map settings
 let mapSettings = {
-  map: [
-    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-    [3, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 2, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 2, 0, 0, 0, 0, 0, 2, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
-    [3, 0, 2, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 3],
-    [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 3],
-    [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-  ],
+  // map: [
+  //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+  //   [3, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 0, 0, 0, 0, 0, 0, 2, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 2, 0, 0, 0, 0, 0, 2, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 0, 0, 0, 5, 0, 0, 0, 0, 2, 1, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 0, 0, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3],
+  //   [3, 0, 2, 1, 1, 1, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 3],
+  //   [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 1, 3],
+  //   [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+  // ], //Initial map
   tileSize: 40,
+  map: generateMap(gameSettings.numberOfEnemies),
   movableSpace: [],
-  numOfEnemies: [],
+  getEnemies: [],
 
   killTile: function (r, c) {
     this.map[r][c] = 0;
@@ -153,7 +161,7 @@ let mapSettings = {
   renderMap: function () {
     //Reset coords
     this.movableSpace = [];
-    this.numOfEnemies = [];
+    this.getEnemies = [];
     character.location = [];
 
     //Function main
@@ -179,7 +187,7 @@ let mapSettings = {
           color = "green";
           image = 80;
 
-          this.numOfEnemies.push([r, c]);
+          this.getEnemies.push([r, c]);
 
         } else if (tile == 3) {
           color = "purple";
@@ -191,13 +199,6 @@ let mapSettings = {
           character.location.push(c);
         }
 
-        // this.drawTile (
-        //     c * this.tileSize,
-        //     r * this.tileSize,
-        //     this.tileSize,
-        //     this.tileSize,
-        //     color
-        // )
         this.drawTileImage(image, c * this.tileSize, r * this.tileSize);
       }
     }
@@ -277,6 +278,8 @@ let character = {
   location: [],
 };
 
+
+
 //Secondary functions
 //Random int
 
@@ -304,7 +307,7 @@ String.prototype.shuffle = function () {
   return a.join("");
 };
 
-//API
+//API – word fetching
 async function getRandomWord() {
   let response = await fetch(
     "https://random-word-form.herokuapp.com/random/noun"
