@@ -1,5 +1,3 @@
-//TODO Map random generation
-
 // Global variables
 var ctx, cvs, key, imageSprite;
 
